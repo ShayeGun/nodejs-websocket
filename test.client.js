@@ -11,5 +11,3 @@ ws.on('open', function open() {
 ws.on('message', function message(data) {
   console.log('received: %s', data);
 });
-
-export { ws as shyClient };
