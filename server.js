@@ -1,23 +1,28 @@
 import WebSocket, { WebSocketServer } from 'ws';
+import os from 'node:os';
 import express from 'express';
+let counter = 0;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const wss = new WebSocketServer({ noServer: true });
 const wssBroad = new WebSocketServer({ noServer: true });
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', function connection(ws, req) {
   ws.on('error', console.error);
 
-  ws.on('message', function message(data, isBinary) {
-    wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data, { binary: isBinary });
-      }
-    });
+  ws.on('message', function message(data) {
+    const mac = JSON.stringify(os.networkInterfaces()['enp5s0'][0]['mac']);
+    ws.send(`${os.platform()}-${os.machine()}-${mac}-${os.arch()}`);
+    ws.emit('test', 'apple');
   });
 
-  ws.send('you are connected to Shynance');
+  ws.on('test', function (t) {
+    console.log(t);
+    console.log(this);
+  });
+
+  ws.send(`you are connected to Shynance test ${counter++}`);
 });
 
 wssBroad.on('connection', function connection(ws, req) {
@@ -29,7 +34,7 @@ wssBroad.on('connection', function connection(ws, req) {
     });
   });
 
-  ws.send('you are connected to Shynance broadcast');
+  ws.send('you are connected to Shynance');
 });
 
 app.use('/connect', (req, res) => {
