@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon server.js",
-    "client": "nodemon client.js"
+    "client": "nodemon client.js",
+    "binance": "nodemon binance-client.js"
   },
   "type": "module",
   "keywords": [],

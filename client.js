@@ -1,13 +1,15 @@
 import WebSocket from 'ws';
 
-const ws = new WebSocket('ws://localhost:3000');
+const ws = new WebSocket('ws://localhost:3001');
 
 ws.on('error', console.error);
 
 ws.on('open', function open() {
-  ws.send('something');
+  ws.send('client is connected to ...');
 });
 
 ws.on('message', function message(data) {
   console.log('received: %s', data);
 });
+
+export { ws as shyClient };
