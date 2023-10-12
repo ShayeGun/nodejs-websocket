@@ -1,6 +1,7 @@
 export const routes = function (ws) {
   return function (req, socket, head) {
     const path = req.url;
+    const auth = req.headers['x_auth'];
 
     //====================================
     //====== BETTER IN PERFORMANCE =======
@@ -23,12 +24,14 @@ export const routes = function (ws) {
     //===================================
     //====== BETTER IN CLEAN CODE =======
     //===================================
-    for (let [k, v] of Object.entries(ws)) {
-      if (path === k) {
-        v.handleUpgrade(req, socket, head, function done(ws) {
-          v.emit('connection', ws, req);
-        });
-        return;
+    if (auth === '1234') {
+      for (let [k, v] of Object.entries(ws)) {
+        if (path === k) {
+          v.handleUpgrade(req, socket, head, function done(ws) {
+            v.emit('connection', ws, req);
+          });
+          return;
+        }
       }
     }
     socket.destroy();
